@@ -1,5 +1,5 @@
 ﻿@baseUrl = http://127.0.0.1:8000/api
-@token = 9|TXDGEoIPZCnbUjY8Vw4wkbNCCG9HLGlRWmStgr9d2ebd5270
+@token = Token que da el #2 Iniciar Sesion
 
 ### 1. Registrar usuario
 POST {{baseUrl}}/register
