@@ -1,0 +1,234 @@
+﻿@baseUrl = http://127.0.0.1:8000/api
+@token = 9|TXDGEoIPZCnbUjY8Vw4wkbNCCG9HLGlRWmStgr9d2ebd5270
+
+### 1. Registrar usuario
+POST {{baseUrl}}/register
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Usuario Coleccion",
+    "email": "coleccion.api@example.com",
+    "password": "Password123",
+    "password_confirmation": "Password123"
+}
+
+### 2. Iniciar sesión
+POST {{baseUrl}}/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "coleccion.api@example.com",
+    "password": "Password123"
+}
+
+### 3. Consultar usuario autenticado
+GET {{baseUrl}}/user
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 4. Listar pedidos del usuario autenticado
+GET {{baseUrl}}/pedidos
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 5. Crear un pedido
+POST {{baseUrl}}/pedidos
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "Cliente Coleccion",
+    "telefono": "70000010",
+    "direccion": "San Salvador",
+    "producto": "Pizza familiar",
+    "cantidad": 2,
+    "total": 25.00,
+    "estado": "Pendiente",
+    "costo_express": 5.00,
+    "fecha_pedido": "2026-11-16"
+}
+
+### 6. Consultar un pedido por ID
+GET {{baseUrl}}/pedidos/ID_PEDIDO
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 7. Actualizar un pedido completo (PUT)
+PUT {{baseUrl}}/pedidos/ID_PEDIDO
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "Cliente Coleccion Actualizado",
+    "telefono": "70000011",
+    "direccion": "Soyapango",
+    "producto": "Pizza grande",
+    "cantidad": 3,
+    "total": 35.00,
+    "estado": "Preparando",
+    "costo_express": 5.00,
+    "fecha_pedido": "2026-11-16"
+}
+
+### 8. Actualizar parcialmente un pedido (PATCH)
+PATCH {{baseUrl}}/pedidos/ID_PEDIDO
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "estado": "En camino"
+}
+
+### 9. Eliminar un pedido
+DELETE {{baseUrl}}/pedidos/ID_PEDIDO
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 10. Crear pedido con estado inválido (esperado: 422)
+POST {{baseUrl}}/pedidos
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "Cliente Prueba",
+    "telefono": "70000012",
+    "direccion": "San Salvador",
+    "producto": "Pizza",
+    "cantidad": 1,
+    "total": 15.00,
+    "estado": "En espera",
+    "costo_express": 5.00,
+    "fecha_pedido": "2026-11-16"
+}
+
+### 11. Crear pedido con cantidad cero (esperado: 422)
+POST {{baseUrl}}/pedidos
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "Cliente Prueba",
+    "telefono": "70000012",
+    "direccion": "San Salvador",
+    "producto": "Pizza",
+    "cantidad": 0,
+    "total": 15.00,
+    "estado": "Pendiente",
+    "costo_express": 5.00,
+    "fecha_pedido": "2026-11-16"
+}
+
+### 12. Crear pedido con total negativo (esperado: 422)
+POST {{baseUrl}}/pedidos
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "Cliente Prueba",
+    "telefono": "70000012",
+    "direccion": "San Salvador",
+    "producto": "Pizza",
+    "cantidad": 1,
+    "total": -10.00,
+    "estado": "Pendiente",
+    "costo_express": 5.00,
+    "fecha_pedido": "2026-11-16"
+}
+
+### 13. Consultar pedido ajeno (esperado: 404)
+GET {{baseUrl}}/pedidos/ID_PEDIDO_DE_OTRO_USUARIO
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 14. Consultar usuario sin token (esperado: 401)
+GET {{baseUrl}}/user
+Accept: application/json
+
+### 15. Consultar pedidos sin token (esperado: 401)
+GET {{baseUrl}}/pedidos
+Accept: application/json
+
+### 16. PUT incompleto (esperado: 422)
+PUT {{baseUrl}}/pedidos/ID_PEDIDO
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "estado": "Entregado"
+}
+
+### 17. Consultar usuario autenticado y sus pedidos
+GET {{baseUrl}}/usuarios
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 18. Crear pedido con total superior al máximo (esperado: 422)
+POST {{baseUrl}}/pedidos
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "Cliente Prueba",
+    "telefono": "70000012",
+    "direccion": "San Salvador",
+    "producto": "Pizza",
+    "cantidad": 1,
+    "total": 100000000.00,
+    "estado": "Pendiente",
+    "costo_express": 5.00,
+    "fecha_pedido": "2026-11-16"
+}
+
+### 19. Actualizar pedido con total superior al máximo (esperado: 422)
+PATCH {{baseUrl}}/pedidos/8
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "total": 100000000.00
+}
+
+### 20. Crear pedido con costo express superior al máximo (esperado: 422)
+POST {{baseUrl}}/pedidos
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "Cliente Prueba",
+    "telefono": "70000012",
+    "direccion": "San Salvador",
+    "producto": "Pizza",
+    "cantidad": 1,
+    "total": 15.00,
+    "estado": "Pendiente",
+    "costo_express": 100000000.00,
+    "fecha_pedido": "2026-11-16"
+}
+
+### 21. Actualizar pedido con costo express superior al máximo (esperado: 422)
+PATCH {{baseUrl}}/pedidos/ID_PEDIDO
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "costo_express": 100000000.00
+}
+
+### 22. Cerrar sesión
+POST {{baseUrl}}/logout
+Accept: application/json
+Authorization: Bearer {{token}}
+

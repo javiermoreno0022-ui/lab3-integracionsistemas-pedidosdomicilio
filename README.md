@@ -1,488 +1,456 @@
-Sistema de Pedidos a Domicilio — Lab II
+﻿# Sistema de Pedidos a Domicilio — Laboratorio III
 
-Sistema web para la gestión de pedidos a domicilio, desarrollado como continuación del proyecto realizado en el Laboratorio I de Integración de Sistemas.
+API REST protegida para la gestión de pedidos a domicilio, desarrollada con Laravel 13, PHP y MySQL, como continuación del proyecto de Integración de Sistemas realizado en los laboratorios I y II.
 
-En esta segunda etapa, el proyecto fue migrado de PHP nativo a Laravel, incorporando un CRUD completo de pedidos, formularios con validación, autenticación de usuarios, manejo de sesiones y aislamiento de información por usuario.
+Esta etapa incorpora autenticación mediante Laravel Sanctum, operaciones CRUD mediante endpoints REST, respuestas JSON con API Resources, validaciones con Form Requests, aislamiento de información por usuario y una capa de servicios para mejorar la mantenibilidad.
 
-1. Descripción del proyecto
+## 1. Descripción del proyecto
 
-El Sistema de Pedidos a Domicilio permite registrar, consultar, actualizar y eliminar pedidos realizados por los clientes.
+El Sistema de Pedidos a Domicilio permite registrar, consultar, actualizar y eliminar pedidos.
 
-Cada usuario registrado en el sistema puede administrar únicamente sus propios pedidos. Para ello, el sistema utiliza autenticación y una relación entre usuarios y pedidos mediante user_id.
+La aplicación cuenta con dos modalidades:
 
-El proyecto corresponde a la segunda etapa del desarrollo realizado en el Laboratorio I, conservando el historial del repositorio original y evolucionando la aplicación hacia una arquitectura basada en Laravel y Eloquent ORM.
+- **Aplicación web:** gestión de pedidos mediante vistas Blade y autenticación por sesiones.
+- **API REST:** gestión de pedidos mediante solicitudes HTTP y respuestas JSON, protegida mediante tokens de Laravel Sanctum.
 
-2. Integrantes del equipo
-Carné	Integrante
-MN-64016-23	Francisco Javier Moreno Navas
-PG-64792-23	Alexander Maximiliano Pérez García
-CL-64224-24	Aaron Steven Cabrera López
-CD-64257-23	Denys Ezequiel Córdova Domínguez
+Cada usuario autenticado puede administrar únicamente sus propios pedidos. La API utiliza las relaciones entre usuarios y pedidos para evitar el acceso no autorizado a información de otras cuentas.
 
-Participación del equipo
-Integrante	Participación
-Francisco Javier Moreno Navas	90%
-Alexander Maximiliano Pérez García	80%
-Aaron Steven Cabrera López	80%
-Denys Ezequiel Córdova Domínguez	80%
+## 2. Integrantes del equipo
 
-Los porcentajes representan la participación individual de cada integrante durante el desarrollo del proyecto y fueron acordados por el equipo.
+| Carné | Integrante |
+|---|---|
+| MN-64016-23 | Francisco Javier Moreno Navas |
+| PG-64792-23 | Alexander Maximiliano Pérez García |
+| CL-64224-24 | Aaron Steven Cabrera López |
+| CD-64257-23 | Denys Ezequiel Córdova Domínguez |
 
-3. Tecnologías utilizadas
-PHP 8.4.23
-Laravel 13.34.0
-Composer 2.10.2
-MySQL
-Blade
-Eloquent ORM
-HTML5
-CSS
-JavaScript/Vite
-Git
-GitHub
+### Coevaluación
 
-4. Funcionalidades principales
-Autenticación de usuarios
+| Integrante | Porcentaje |
+|---|---:|
+| Francisco Javier Moreno Navas | 90% |
+| Alexander Maximiliano Pérez García | 80% |
+| Aaron Steven Cabrera López | 90% |
+| Denys Ezequiel Córdova Domínguez | 80% |
 
-El sistema permite:
+Los porcentajes representan la evaluación de participación individual acordada por el equipo.
 
-Registrar nuevos usuarios.
-Iniciar sesión.
-Cerrar sesión.
-Mantener la sesión activa.
-Proteger las rutas privadas mediante middleware auth.
-Regenerar la sesión después del inicio de sesión.
-Invalidar la sesión al cerrar sesión.
-Gestión de pedidos
+### Responsables de defensa — Laboratorio III
 
-Cada usuario puede:
+| Bloque | Responsable |
+|---|---|
+| A. API REST y JSON | Francisco Javier Moreno Navas |
+| B. Autenticación con Sanctum | Aaron Steven Cabrera López |
+| C. Pruebas y manejo de errores | Alexander Maximiliano Pérez García |
+| D. Uso crítico de IA y mantenimiento | Denys Ezequiel Córdova Domínguez |
 
-Registrar pedidos.
-Consultar sus pedidos.
-Consultar el detalle de un pedido.
-Editar pedidos.
-Actualizar el estado de un pedido.
-Eliminar pedidos.
-Estados disponibles
-
-Los pedidos pueden tener los siguientes estados:
-
-Pendiente
-Preparando
-En camino
-Entregado
-Cancelado
-Validación
-
-Los formularios utilizan Form Requests para validar los datos antes de almacenarlos o actualizarlos.
-
-Entre las validaciones implementadas se encuentran:
-
-Campos obligatorios.
-Longitud máxima de texto.
-Cantidad mínima de productos.
-Valores numéricos.
-Valores válidos para el estado.
-Valores monetarios.
-Fecha válida.
-
-Los errores de validación se muestran directamente en las vistas Blade.
-
-Protección de formularios
-
-Los formularios utilizan protección CSRF mediante la directiva:
-
-@csrf
-
-Para las operaciones de actualización y eliminación también se utilizan los métodos HTTP correspondientes mediante:
-
-@method('PUT')
-
-y
-
-@method('DELETE')
-
-5. Aislamiento de información por usuario
-
-Una de las funcionalidades principales del Laboratorio II es garantizar que cada usuario solamente pueda administrar sus propios pedidos.
-
-La relación implementada es:
-
-User
-  │
-  └── hasMany
-          │
-          ▼
-        Pedido
-
-Cada pedido posee un user_id que identifica al usuario propietario.
-
-En el controlador, las consultas se realizan utilizando la relación del usuario autenticado:
-
-auth()->user()->pedidos()
-
-De esta manera, un usuario no puede consultar, modificar o eliminar pedidos pertenecientes a otro usuario.
-
-Por ejemplo, si un usuario intenta acceder directamente a un pedido que pertenece a otra cuenta, el sistema no lo encuentra y devuelve una respuesta 404.
-
-6. Estructura principal
-
-La estructura relevante del proyecto es:
-
-lab2-pedidosdomicilio/
-│
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── AuthController.php
-│   │   │   └── PedidoController.php
-│   │   │
-│   │   └── Requests/
-│   │       ├── StorePedidoRequest.php
-│   │       └── UpdatePedidoRequest.php
-│   │
-│   └── Models/
-│       ├── Pedido.php
-│       └── User.php
-│
-├── database/
-│   └── migrations/
-│       └── create_pedidos_table.php
-│
-├── resources/
-│   └── views/
-│       ├── auth/
-│       │   ├── login.blade.php
-│       │   └── register.blade.php
-│       │
-│       ├── layouts/
-│       │   └── app.blade.php
-│       │
-│       └── pedidos/
-│           ├── index.blade.php
-│           ├── create.blade.php
-│           ├── show.blade.php
-│           └── edit.blade.php
-│
-├── routes/
-│   └── web.php
-│
-├── public/
-├── config/
-├── tests/
-├── composer.json
-├── composer.lock
-├── package.json
-├── phpunit.xml
-└── artisan
-
-7. Base de datos
-
-El proyecto utiliza MySQL como sistema gestor de base de datos.
-
-La tabla principal creada para el Laboratorio II es:
-
-pedidos
-Campo	Descripción
-id	Identificador del pedido
-user_id	Usuario propietario del pedido
-cliente	Nombre del cliente que recibe el pedido
-telefono	Teléfono del cliente
-direccion	Dirección de entrega
-producto	Producto solicitado
-cantidad	Cantidad solicitada
-total	Total del pedido
-estado	Estado actual del pedido
-costo_express	Costo adicional del servicio express
-fecha_pedido	Fecha del pedido
-created_at	Fecha de creación
-updated_at	Fecha de actualización
-
-La columna user_id mantiene la relación entre cada pedido y el usuario propietario.
-
-8. Modelo de datos
-
-La relación principal del sistema es de uno a muchos:
-
-┌──────────────┐
-│     User     │
-├──────────────┤
-│ id           │
-│ name         │
-│ email        │
-│ password     │
-└──────┬───────┘
-       │
-       │ 1:N
-       │
-       ▼
-┌──────────────┐
-│    Pedido    │
-├──────────────┤
-│ id           │
-│ user_id      │
-│ cliente      │
-│ telefono     │
-│ direccion    │
-│ producto     │
-│ cantidad     │
-│ total        │
-│ estado       │
-│ costo_express│
-│ fecha_pedido │
-└──────────────┘
-
-9. Rutas principales
-Autenticación
-GET   /register
-POST  /register
-
-GET   /login
-POST  /login
-
-POST  /logout
-Pedidos
-
-El sistema utiliza las rutas RESTful de Laravel mediante:
-
-Route::resource('pedidos', PedidoController::class);
-
-Esto genera las operaciones:
-
-GET      /pedidos
-GET      /pedidos/create
-POST     /pedidos
-GET      /pedidos/{pedido}
-GET      /pedidos/{pedido}/edit
-PUT      /pedidos/{pedido}
-DELETE   /pedidos/{pedido}
-
-Las rutas de pedidos se encuentran protegidas mediante:
-
-Route::middleware('auth')->group(function () {
-    // ...
-});
-
-10. Instalación y configuración
-Requisitos
-
-Antes de ejecutar el proyecto se necesita tener instalado:
-
-PHP 8.4 o compatible con Laravel 13.
-Composer.
-MySQL.
-Node.js y npm.
-Git.
-
-También se recomienda utilizar un entorno de desarrollo como Laravel Herd, XAMPP u otro entorno compatible.
-
-Paso 1. Clonar el repositorio
-git clone https://github.com/javiermoreno0022-ui/lab2-integracionsistemas-pedidosdomicilio.git
-
-Ingresar al proyecto:
-
-cd lab2-integracionsistemas-pedidosdomicilio
-
-El enlace anterior corresponde al repositorio del proyecto. La versión final del Laboratorio II conserva el historial del Laboratorio I.
-
-Paso 2. Instalar dependencias PHP
+## 3. Tecnologías utilizadas
+
+- PHP 8.4.23
+- Laravel 13
+- Composer 2.10.2
+- Laravel Sanctum 4.4.0
+- MySQL
+- Eloquent ORM
+- Blade
+- HTML5, CSS y JavaScript
+- Git y GitHub
+- REST Client para Visual Studio Code
+
+## 4. Funcionalidades de la API REST
+
+### Autenticación
+
+La API implementa autenticación mediante Laravel Sanctum:
+
+- Registro de usuarios.
+- Inicio de sesión.
+- Generación de tokens personales.
+- Consulta del usuario autenticado.
+- Cierre de sesión.
+- Revocación del token utilizado.
+
+Las rutas privadas requieren un token Bearer válido en la cabecera `Authorization`.
+
+### Gestión de pedidos
+
+El usuario autenticado puede:
+
+- Listar sus propios pedidos.
+- Registrar nuevos pedidos.
+- Consultar un pedido por su identificador.
+- Actualizar un pedido completamente mediante PUT.
+- Actualizar parcialmente un pedido mediante PATCH.
+- Eliminar pedidos.
+
+### Validaciones
+
+Se utilizan Form Requests para validar los datos recibidos por la API.
+
+Entre las reglas implementadas se encuentran:
+
+- Campos obligatorios.
+- Tipos de datos.
+- Longitud máxima de texto.
+- Cantidad mínima de productos.
+- Valores numéricos y monetarios no negativos.
+- Estados permitidos.
+- Fechas válidas.
+- Validación diferenciada para PUT y PATCH.
+
+### Respuestas JSON
+
+Los API Resources permiten controlar la estructura de los datos devueltos por los endpoints.
+
+Se utilizan códigos HTTP según el resultado de las operaciones:
+
+| Código | Descripción |
+|---|---|
+| 200 | Solicitud procesada correctamente |
+| 201 | Recurso creado correctamente |
+| 204 | Operación completada sin contenido de respuesta |
+| 401 | Usuario no autenticado |
+| 404 | Recurso no encontrado o no accesible |
+| 422 | Error de validación |
+
+## 5. Endpoints de la API
+
+La URL base de desarrollo es:
+
+`http://127.0.0.1:8000/api`
+
+| Método | Ruta | ¿Protegida? | Descripción |
+|---|---|---|---|
+| POST | `/register` | No | Registrar usuario |
+| POST | `/login` | No | Iniciar sesión y generar token |
+| POST | `/logout` | Sí | Revocar el token actual |
+| GET | `/user` | Sí | Consultar usuario autenticado |
+| GET | `/pedidos` | Sí | Listar pedidos propios |
+| POST | `/pedidos` | Sí | Crear pedido |
+| GET | `/pedidos/{pedido}` | Sí | Consultar pedido |
+| PUT | `/pedidos/{pedido}` | Sí | Actualizar pedido completo |
+| PATCH | `/pedidos/{pedido}` | Sí | Actualizar pedido parcialmente |
+| DELETE | `/pedidos/{pedido}` | Sí | Eliminar pedido |
+| GET | `/usuarios` | Sí | Consultar usuario autenticado y sus pedidos |
+
+Las rutas protegidas utilizan el middleware `auth:sanctum`.
+
+## 6. Seguridad y aislamiento de información
+
+La API utiliza Laravel Sanctum para autenticar las solicitudes mediante tokens personales.
+
+Para acceder a una ruta protegida se debe enviar:
+
+```http
+Authorization: Bearer {token}
+```
+
+El token no debe enviarse como parámetro de la URL ni almacenarse en el repositorio.
+
+El aislamiento de pedidos se realiza mediante las relaciones del usuario autenticado:
+
+```php
+$request->user()->pedidos()
+```
+
+De esta manera, las consultas, actualizaciones y eliminaciones se limitan a los pedidos del propietario.
+
+Si un usuario intenta consultar un pedido perteneciente a otra cuenta, la API devuelve HTTP 404.
+
+También se implementan:
+
+- Validación de datos de entrada.
+- Protección de rutas mediante Sanctum.
+- Contraseñas almacenadas mediante hashing.
+- Revocación de tokens al cerrar sesión.
+- Respuestas JSON para errores de las rutas API.
+- Transacción de base de datos durante el registro de usuarios y creación de su token.
+
+## 7. Arquitectura y organización del código
+
+El proyecto utiliza controladores, modelos, Form Requests, API Resources y una capa de servicios.
+
+### Componentes principales
+
+| Componente | Responsabilidad |
+|---|---|
+| `Api/AuthController.php` | Registro, inicio y cierre de sesión |
+| `Api/PedidoController.php` | Recibir solicitudes HTTP de pedidos |
+| `Api/UsuarioController.php` | Operaciones del recurso de usuarios |
+| `PedidoService.php` | Centralizar la lógica de negocio de pedidos |
+| `StorePedidoRequest.php` | Validar la creación de pedidos |
+| `UpdatePedidoRequest.php` | Validar actualizaciones PUT y PATCH |
+| `PedidoResource.php` | Estructurar respuestas JSON de pedidos |
+| `UsuarioResource.php` | Estructurar respuestas JSON de usuarios |
+
+### Capa de servicios
+
+Se incorporó `app/Services/PedidoService.php` para separar la lógica de negocio de los controladores.
+
+El servicio implementa las operaciones:
+
+- `listar`
+- `crear`
+- `mostrar`
+- `actualizar`
+- `eliminar`
+
+El controlador utiliza inyección de dependencias para acceder al servicio.
+
+Esta separación facilita el mantenimiento y evita concentrar todas las operaciones en un único controlador.
+
+## 8. Base de datos y relaciones
+
+El proyecto utiliza MySQL y Eloquent ORM.
+
+La relación principal es de uno a muchos:
+
+```text
+User (1) ───────── (N) Pedido
+```
+
+Cada pedido contiene un `user_id` que identifica al propietario.
+
+La tabla `pedidos` incluye los siguientes campos:
+
+| Campo | Descripción |
+|---|---|
+| `id` | Identificador del pedido |
+| `user_id` | Usuario propietario |
+| `cliente` | Nombre del cliente |
+| `telefono` | Teléfono de contacto |
+| `direccion` | Dirección de entrega |
+| `producto` | Producto solicitado |
+| `cantidad` | Cantidad solicitada |
+| `total` | Total del pedido |
+| `estado` | Estado actual |
+| `costo_express` | Costo adicional express |
+| `fecha_pedido` | Fecha del pedido |
+| `created_at` | Fecha de creación |
+| `updated_at` | Fecha de actualización |
+
+## 9. Instalación y configuración
+
+### Requisitos
+
+- PHP 8.4 o versión compatible con el proyecto.
+- Composer.
+- MySQL.
+- Node.js y npm.
+- Git.
+
+### Paso 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/javiermoreno0022-ui/lab3-integracionsistemas-pedidosdomicilio.git
+```
+
+Ingresar al directorio:
+
+```bash
+cd lab3-integracionsistemas-pedidosdomicilio
+```
+
+### Paso 2. Instalar dependencias
+
+```bash
 composer install
-Paso 3. Instalar dependencias frontend
 npm install
-Paso 4. Configurar el archivo .env
+npm run build
+```
 
-Copiar el archivo de ejemplo:
+### Paso 3. Configurar el archivo `.env`
 
+En Windows:
+
+```powershell
 copy .env.example .env
+```
 
-En sistemas Linux/macOS:
+En Linux/macOS:
 
+```bash
 cp .env.example .env
+```
 
-Configurar las credenciales de MySQL en .env.
+Configurar las credenciales de MySQL en el archivo `.env`.
 
 Ejemplo:
 
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=pedidos_domicilio
 DB_USERNAME=root
 DB_PASSWORD=
+```
 
 La base de datos debe existir previamente en MySQL.
 
-Paso 5. Generar la clave de la aplicación
+### Paso 4. Generar la clave de aplicación
+
+```bash
 php artisan key:generate
-Paso 6. Ejecutar las migraciones
+```
+
+### Paso 5. Ejecutar las migraciones
+
+```bash
 php artisan migrate
+```
 
-Esto crea las tablas necesarias de Laravel y la tabla pedidos.
+### Paso 6. Iniciar el servidor
 
-Paso 7. Iniciar el servidor
+```bash
 php artisan serve
+```
 
-Después ingresar desde el navegador a:
+La aplicación estará disponible en:
 
-http://localhost:8000
-11. Flujo de uso
+`http://127.0.0.1:8000`
 
-El flujo principal del sistema es:
+La API estará disponible en:
 
-Inicio
-  │
-  ├── Registrarse
-  │      │
-  │      ▼
-  │   Crear cuenta
-  │      │
-  │      ▼
-  └── Iniciar sesión
-         │
-         ▼
-     Mis pedidos
-         │
-         ├── Registrar pedido
-         │
-         ├── Ver pedido
-         │
-         ├── Editar pedido
-         │
-         └── Eliminar pedido
+`http://127.0.0.1:8000/api`
 
-Cada usuario trabaja únicamente con los pedidos asociados a su cuenta.
+## 10. Pruebas realizadas
 
-12. Pruebas realizadas
+Se realizaron pruebas funcionales de autenticación, CRUD, validaciones y seguridad mediante solicitudes HTTP locales.
 
-Durante el desarrollo se realizaron pruebas funcionales de:
+### Autenticación
 
-Autenticación
-Registro de usuario.
-Inicio de sesión.
-Cierre de sesión.
-Acceso protegido a /pedidos.
-Redirección al login cuando no existe una sesión.
-Validación
+- Registro de usuario.
+- Inicio de sesión.
+- Consulta del usuario autenticado.
+- Acceso sin token.
+- Cierre de sesión.
+- Revocación del token.
 
-Se verificó el comportamiento de los formularios cuando:
+### CRUD y validaciones
 
-Se dejan campos obligatorios vacíos.
-Se introducen cantidades inválidas.
-Se introducen valores numéricos incorrectos.
-Las contraseñas no coinciden.
-Se intenta registrar un correo electrónico ya existente.
-CRUD
+- Listado de pedidos.
+- Creación de pedidos.
+- Consulta individual.
+- Actualización completa.
+- Actualización parcial.
+- Eliminación.
+- Estados inválidos.
+- Cantidades no permitidas.
+- Totales negativos.
+- PUT incompleto.
 
-Se verificaron las operaciones:
+### Seguridad
 
-Crear.
-Consultar.
-Mostrar detalle.
-Actualizar.
-Eliminar.
-Aislamiento de datos
+- Acceso a rutas sin autenticación.
+- Consulta de pedidos propios.
+- Intentos de acceso a pedidos de otro usuario.
+- Verificación del aislamiento de información.
 
-Se probaron dos usuarios diferentes.
+### Resultados documentados
 
-El usuario A puede visualizar sus propios pedidos, mientras que el usuario B no puede acceder a los pedidos pertenecientes al usuario A.
+Se registraron 28 pruebas manuales aprobadas:
 
-También se verificó el acceso directo a un pedido de otro usuario, obteniendo una respuesta 404, demostrando el aislamiento implementado.
+- 8 pruebas de autenticación.
+- 20 pruebas de CRUD, validaciones y seguridad.
 
-13. Relación con el Laboratorio I
+También se ejecutó `php artisan test`, con 2 pruebas de ejemplo aprobadas.
 
-Este proyecto representa la evolución del Sistema de Pedidos a Domicilio desarrollado originalmente en PHP nativo durante el Laboratorio I.
+Los resultados y procedimientos se encuentran en la carpeta `docs/pruebas/`.
 
-En el Laboratorio I se trabajó principalmente con:
+## 11. Documentación del laboratorio
 
-PHP nativo.
-Programación Orientada a Objetos.
-Herencia.
-Interfaces.
-Namespaces.
-Composer.
-PDO.
-Operaciones CRUD.
+La carpeta `docs/` contiene los siguientes documentos:
 
-En el Laboratorio II se utiliza Laravel para incorporar:
+| Archivo | Contenido |
+|---|---|
+| `CAMBIOS.md` | Registro de mantenimiento correctivo y evolutivo |
+| `FICHA_USO_CRITICO_IA.md` | Casos de uso crítico de Inteligencia Artificial |
+| `ANEXO_A_COMPARACION_FRAMEWORKS.md` | Comparación de Laravel y Express.js |
+| `evidencia_pruebas_autenticacion_sanctum.md` | Evidencias de autenticación |
+| `evidencia_pruebas_crud_api.md` | Evidencias de CRUD, validaciones y seguridad |
+| `pruebas/registro_pruebas_lab3.md` | Registro general de pruebas ejecutadas |
 
-Arquitectura MVC.
-Rutas.
-Controladores.
-Eloquent ORM.
-Migraciones.
-Relaciones entre modelos.
-Blade.
-Form Requests.
-Validación.
-Autenticación.
-Sesiones.
-Aislamiento de datos por usuario.
+## 12. Colección de solicitudes HTTP
 
-El repositorio conserva el historial anterior para evidenciar la evolución incremental del proyecto.
+En la carpeta `pruebas/` se encuentra:
 
-14. Seguridad implementada
+`pedidos_api.http`
 
-El proyecto incorpora diferentes mecanismos de seguridad proporcionados por Laravel:
+Este archivo contiene solicitudes HTTP para probar:
 
-Autenticación mediante Auth.
-Middleware auth.
-Protección CSRF.
-Regeneración de sesión después del inicio de sesión.
-Invalidación de sesión al cerrar sesión.
-Contraseñas almacenadas mediante hashing.
-Validación de datos de entrada.
-Restricción de acceso a pedidos según el usuario autenticado.
+- Registro e inicio de sesión.
+- Consulta y cierre de sesión.
+- Operaciones CRUD.
+- Validaciones.
+- Acceso sin token.
+- Intentos de acceso a pedidos ajenos.
+- Actualizaciones PUT y PATCH.
 
-15. Control de versiones
+Se puede utilizar mediante la extensión REST Client de Visual Studio Code.
 
-El proyecto utiliza Git para controlar el desarrollo y conservar la evolución del sistema.
+Los valores de token e identificadores de pedidos deben configurarse localmente antes de ejecutar las solicitudes.
 
-La estructura histórica principal corresponde a:
+## 13. Evolución del proyecto
 
-Lab I
-  │
-  ├── Initial commit
-  │
-  ├── Sistema de Pedidos a Domicilio
-  │
-  └── Integrar proyecto con repositorio de GitHub
-           │
-           ▼
-        Lab II
-           │
-           └── Migrar proyecto de Lab I a Laravel
-               e implementar Lab II
+El sistema representa la continuidad del proyecto iniciado en el Laboratorio I.
 
-El historial permite identificar la transición del proyecto original en PHP nativo hacia la versión desarrollada con Laravel.
+### Laboratorio I
 
-16. Estado actual del proyecto
+- PHP nativo.
+- Programación Orientada a Objetos.
+- Herencia e interfaces.
+- Namespaces.
+- Composer.
+- PDO.
+- CRUD.
 
-El proyecto cuenta con:
+### Laboratorio II
 
-CRUD completo de pedidos.
-Formularios Blade.
-Validaciones mediante Form Requests.
-Protección CSRF.
-Autenticación.
-Registro de usuarios.
-Inicio y cierre de sesión.
-Manejo de sesiones.
-Relación User → Pedido.
-Aislamiento de pedidos por usuario.
-Estados de pedido.
-Migraciones de base de datos.
-Eloquent ORM.
-Rutas protegidas.
-Mensajes de confirmación.
-Manejo de errores de validación.
+- Migración a Laravel.
+- Arquitectura MVC.
+- Blade.
+- Eloquent ORM.
+- Migraciones.
+- Form Requests.
+- Autenticación por sesiones.
+- Aislamiento de información por usuario.
 
-17. Nota sobre uso de IA
+### Laboratorio III
 
-Durante el desarrollo del proyecto se utilizaron herramientas de Inteligencia Artificial como apoyo para comprender conceptos, revisar código, identificar errores y mejorar la documentación.
+- API REST.
+- Respuestas JSON.
+- API Resources.
+- Laravel Sanctum.
+- Tokens de autenticación.
+- Protección de endpoints.
+- Pruebas de API.
+- Manejo de errores.
+- Capa de servicios.
+- Mantenimiento correctivo y evolutivo.
+- Uso crítico de Inteligencia Artificial.
 
-El código fue revisado, adaptado y probado por el equipo de acuerdo con los requerimientos del proyecto y las pruebas realizadas localmente.
+## 14. Uso de Inteligencia Artificial
 
-18. Licencia
+Durante el desarrollo se utilizaron herramientas de Inteligencia Artificial como apoyo para revisar código, proponer soluciones, identificar errores y mejorar la documentación.
+
+Las propuestas fueron revisadas, adaptadas y verificadas mediante pruebas locales.
+
+La ficha de uso crítico documenta dos casos, los problemas identificados, las correcciones aplicadas y las justificaciones técnicas.
+
+No se deben compartir tokens reales, contraseñas ni contenido sensible del archivo `.env` con herramientas de IA.
+
+## 15. Control de versiones
+
+El proyecto utiliza Git y GitHub para conservar el historial de desarrollo y registrar los cambios realizados durante los laboratorios.
+
+**Repositorio:**
+
+https://github.com/javiermoreno0022-ui/lab3-integracionsistemas-pedidosdomicilio
+
+El archivo `.env`, las dependencias instaladas y los datos sensibles no deben incluirse en el repositorio.
+
+## 16. Licencia
 
 Proyecto académico desarrollado para la asignatura Integración de Sistemas.
 
