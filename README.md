@@ -446,7 +446,7 @@ El proyecto utiliza Git y GitHub para conservar el historial de desarrollo y reg
 
 **Repositorio:**
 
-https://github.com/javiermoreno0022-ui/lab3-integracionsistemas-pedidosdomicilio
+https://github.com/javiermoreno0022-ui/lab3-integracionsistemas-pedidosdomicilio/tree/lab3
 
 El archivo `.env`, las dependencias instaladas y los datos sensibles no deben incluirse en el repositorio.
 
