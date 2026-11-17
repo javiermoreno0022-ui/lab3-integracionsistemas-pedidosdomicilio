@@ -450,6 +450,13 @@ https://github.com/javiermoreno0022-ui/lab3-integracionsistemas-pedidosdomicilio
 
 El archivo `.env`, las dependencias instaladas y los datos sensibles no deben incluirse en el repositorio.
 
+**Tablero Kanban:**
+
+El seguimiento y la organización de las actividades del Laboratorio III se realizaron mediante GitHub Projects.
+
+**Enlace al tablero:**
+https://github.com/users/javiermoreno0022-ui/projects/7
+
 ## 16. Licencia
 
 Proyecto académico desarrollado para la asignatura Integración de Sistemas.
