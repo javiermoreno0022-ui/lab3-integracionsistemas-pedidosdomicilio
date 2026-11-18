@@ -89,3 +89,18 @@ Se ejecutaron las siguientes comprobaciones:
 Se realizó mantenimiento correctivo para solucionar la actualización parcial de pedidos y la validación de límites numéricos. También se realizó mantenimiento evolutivo para incorporar una capa de servicios.
 
 Los cambios fueron comprobados mediante solicitudes HTTP y verificaciones técnicas en el entorno local.
+
+## 6. Versiones y entorno del proyecto
+
+Versiones utilizadas durante el desarrollo y las pruebas del Laboratorio III:
+
+| Componente | Versión o tecnología |
+|---|---|
+| Laravel | 13.42.0 |
+| PHP | 8.4.23 |
+| Composer | 2.10.2 |
+| Base de datos | MySQL |
+| Autenticación API | Laravel Sanctum 4.4.0 |
+| Entorno | Local |
+
+**Nota:** Las versiones corresponden al entorno local utilizado para desarrollar y verificar el Sistema de Pedidos a Domicilio.

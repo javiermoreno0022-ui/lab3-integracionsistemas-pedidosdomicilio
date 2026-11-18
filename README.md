@@ -1,6 +1,6 @@
 ﻿# Sistema de Pedidos a Domicilio — Laboratorio III
 
-API REST protegida para la gestión de pedidos a domicilio, desarrollada con Laravel 13, PHP y MySQL, como continuación del proyecto de Integración de Sistemas realizado en los laboratorios I y II.
+API REST protegida para la gestión de pedidos a domicilio, desarrollada con Laravel 13.42.0, PHP y MySQL, como continuación del proyecto de Integración de Sistemas realizado en los laboratorios I y II.
 
 Esta etapa incorpora autenticación mediante Laravel Sanctum, operaciones CRUD mediante endpoints REST, respuestas JSON con API Resources, validaciones con Form Requests, aislamiento de información por usuario y una capa de servicios para mejorar la mantenibilidad.
 
@@ -47,7 +47,7 @@ Los porcentajes representan la evaluación de participación individual acordada
 ## 3. Tecnologías utilizadas
 
 - PHP 8.4.23
-- Laravel 13
+- Laravel 13.42.0
 - Composer 2.10.2
 - Laravel Sanctum 4.4.0
 - MySQL
@@ -354,7 +354,7 @@ Se registraron 28 pruebas manuales aprobadas:
 - 8 pruebas de autenticación.
 - 20 pruebas de CRUD, validaciones y seguridad.
 
-También se ejecutó `php artisan test`, con 2 pruebas de ejemplo aprobadas.
+También se ejecutó `php artisan test`, con 2 pruebas de ejemplo del framework Laravel aprobadas. Estas pruebas no representan una automatización completa de los escenarios CRUD y autenticación.
 
 Los resultados y procedimientos se encuentran en la carpeta `docs/pruebas/`.
 
@@ -462,3 +462,4 @@ https://github.com/users/javiermoreno0022-ui/projects/7
 Proyecto académico desarrollado para la asignatura Integración de Sistemas.
 
 No está destinado a uso comercial.
+

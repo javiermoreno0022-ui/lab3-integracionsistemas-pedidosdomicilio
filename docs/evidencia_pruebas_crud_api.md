@@ -86,6 +86,28 @@ También se verificó que el listado del primer usuario no incluyera pedidos per
 
 Esto demuestra que las consultas de pedidos se limitan al usuario autenticado y que no se permite acceder a pedidos ajenos mediante la modificación del identificador.
 
+### Verificación adicional en instalación limpia (17 de noviembre de 2026)
+
+Se realizó una prueba adicional en una copia independiente del repositorio, ubicada en `prueba-lab3-aaron`, simulando el procedimiento de instalación que seguirá otro integrante del equipo.
+
+Se verificaron los siguientes aspectos:
+
+- Instalación de dependencias mediante `composer install`.
+- Configuración del archivo `.env` y conexión a una base de datos MySQL independiente.
+- Ejecución correcta de las cinco migraciones.
+- Disponibilidad de las 10 rutas de la API.
+- Registro e inicio de sesión de dos usuarios diferentes mediante Laravel Sanctum.
+- Consulta de `/api/usuarios` con el token de cada usuario.
+
+**Resultados observados:**
+
+- Con el token del usuario ID 1 (`Aaron Prueba`), `/api/usuarios` devolvió únicamente sus datos y una colección de pedidos vacía.
+- Con el token del usuario ID 2 (`Segundo Usuario`), `/api/usuarios` devolvió sus datos y su pedido ID 2.
+- No se expusieron contraseñas ni tokens en las respuestas.
+- Se comprobó que cada usuario recibe únicamente sus propios datos y pedidos.
+
+**Resultado:** Prueba de instalación limpia y aislamiento de información aprobada en el entorno local.
+
 ## 5. Conclusión
 
 Las pruebas realizadas verificaron:

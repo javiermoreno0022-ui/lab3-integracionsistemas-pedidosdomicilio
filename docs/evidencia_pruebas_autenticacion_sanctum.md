@@ -65,6 +65,22 @@ Por tanto, el flujo básico de autenticación y autorización con Laravel Sanctu
 - Las pruebas de CRUD, validaciones y aislamiento de pedidos se documentan en `evidencia_pruebas_crud_api.md`.
 - El registro general consolida 28 pruebas manuales aprobadas entre autenticación, CRUD, validaciones y seguridad.
 
+## 7. Verificación complementaria en instalación limpia (17 de noviembre de 2026)
+
+Se realizó una instalación independiente del proyecto en la carpeta `prueba-lab3-aaron`, utilizando una base de datos MySQL separada de la instalación original.
+
+Se verificó el funcionamiento de Laravel Sanctum mediante dos cuentas de prueba:
+
+- Se registró e inició sesión con el primer usuario (`Aaron Prueba`).
+- Se consultó `/api/user` utilizando su token y se recibieron sus datos correctamente.
+- Se registró e inició sesión con un segundo usuario (`Segundo Usuario`).
+- Se consultó `/api/usuarios` con los tokens de ambas cuentas y se comprobó que cada respuesta correspondía exclusivamente al usuario autenticado.
+- Se confirmó que el segundo usuario conservaba su propio pedido y que sus datos no se mezclaban con los del primer usuario.
+
+También se verificó el cierre de sesión y la revocación del token del segundo usuario: después del cierre de sesión, las solicitudes protegidas con ese token devolvieron HTTP 401.
+
+**Resultado:** autenticación, autorización, aislamiento de información y revocación de tokens verificados en la copia independiente del proyecto.
+
 
 
 
